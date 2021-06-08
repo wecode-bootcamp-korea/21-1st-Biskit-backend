@@ -7,9 +7,9 @@ class Status(models.Model):
         db_table = 'status'
 
 class Order(models.Model):
-    ordered_time = models.DateTimeField(auto_now_add=True)
-    product      = models.ForeignKey('products.Product', on_delete=models.CASCADE)
-    status       = models.ForeignKey(Status, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    product    = models.ForeignKey('products.Product', on_delete=models.CASCADE)
+    status     = models.ForeignKey(Status, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'orders'
