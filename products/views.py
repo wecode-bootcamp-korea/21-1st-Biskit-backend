@@ -1,5 +1,3 @@
-import json
-
 from django.views import View
 from django.http  import JsonResponse
 
@@ -14,12 +12,8 @@ class ProductDetailView(View):
             tastes       = product.tasteproduct_set.all()
             images       = product.productimage_set.all()
             descriptions = product.description_set.all()
-    
-            product_info     = {}
-            description_info = {}
-            
-            detail_image_list = [image.image_url for image in images]
 
+            detail_image_list = [image.image_url for image in images]
             taste_list        = [taste.taste.taste for taste in tastes]
 
             product_info = {
