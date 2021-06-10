@@ -51,7 +51,7 @@ class DayProduct(models.Model):
         db_table = 'day_products'
 
 class Taste(models.Model):
-    taste = models.CharField(max_length=45)
+    name = models.CharField(max_length=45)
 
     class Meta:
         db_table = 'tastes'
