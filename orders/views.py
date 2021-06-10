@@ -4,10 +4,10 @@ from django.views     import View
 from django.http      import JsonResponse
 from django.db.models import Q
 
-from users.models    import User
-from products.models import Product, ProductImage
+from users.models     import User
+from products.models  import Product, ProductImage
 
-from .models         import Status, Order, OrderItem
+from .models          import Status, Order, OrderItem
 
 class OrderitemView(View):
     
@@ -21,7 +21,7 @@ class OrderitemView(View):
             img       = ProductImage.objects.get(id = product.id)
             
             if  quantity > product.stock:
-                return JsonResponse({'경고':'최대수량{0}넘기셨습니다.'.format(quantity)},status=400)
+                return JsonResponse({'message':'KEY_ERROR'.format(quantity)},status=400)
 
             order = Order.objects.create(
                 product = product,
@@ -40,5 +40,4 @@ class OrderitemView(View):
         except KeyError:
             return JsonResponse ({'message':'KEY_ERROR'},status=400)
 
-    
     
