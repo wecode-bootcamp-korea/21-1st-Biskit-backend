@@ -1,8 +1,5 @@
-import json
-
 from django.views     import View
 from django.http      import JsonResponse
-from django.db.models import Q
 
 from products.models import Product
 
@@ -33,4 +30,4 @@ class ProductList(View):
 
             result.append(product_info)
 
-        return JsonResponse({'message' : 'SUCCESS'}, status=200)
+        return JsonResponse({'message' : 'SUCCESS', 'result' : result}, status=200)
