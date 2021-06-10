@@ -26,13 +26,11 @@ class ProductDetailView(View):
                 'taste'        : taste_list
             }
 
-            for description in descriptions:
-                
-                description_info = {
+            description_info = [{
                     'detail'      : description.detail,
                     'information' : description.information,
                     'delivery'    : description.delivery,
                     'refund'      : description.refund
-                }
+                } for description in descriptions]
 
             return JsonResponse({'detail_result' : product_info, 'description_result' : description_info, 'message' : 'SUCCESS'}, status=200)
