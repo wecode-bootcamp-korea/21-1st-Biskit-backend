@@ -14,7 +14,7 @@ class ProductList(View):
             'calorie'   : product.calorie,
             'gram'      : product.gram,
             'taste'     : [taste.taste.taste for taste in product.tasteproduct_set.all()] ,
-            'images'    : product.productimage_set.all().first().image_url
+            'images'    : '' if product.productimage_set.all().first()==None else product.productimage_set.all().first().image_url
         } for product in products]
 
         return JsonResponse({'result' : result}, status=200)
