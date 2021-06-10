@@ -4,7 +4,6 @@ from django.http  import JsonResponse
 from .models import Product
 
 class ProductDetailView(View):
-
     def get(self, request, product_title):
 
         product = Product.objects.get(title=product_title)
@@ -20,7 +19,7 @@ class ProductDetailView(View):
             'gram'             : product.gram,
             'calorie'          : product.calorie,
             'detail_image'     : [image.image_url for image in images],
-            'taste'            : [taste.taste.taste for taste in tastes],
+            'taste'            : [taste.taste.name for taste in tastes],
             'description_info' : [{
                                     'detail'      : description.detail,
                                     'information' : description.information,
