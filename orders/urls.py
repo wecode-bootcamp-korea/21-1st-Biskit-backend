@@ -3,5 +3,5 @@ from.views       import OrderitemView
 
 
 urlpatterns = [
-    path('/ordersitem',OrderitemView.as_view()),
+    path('/cart',OrderitemView.as_view()),
 ]
