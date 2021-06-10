@@ -28,4 +28,4 @@ class ProductDetailView(View):
                                 } for description in descriptions]
         }
 
-        return JsonResponse({'detail_result' : product_info}, status=200)
+        return JsonResponse({'result' : product_info}, status=200)
