@@ -41,11 +41,11 @@ class ProductReviewVeiw(View):
         else:
             reviews = product.review_set.order_by(order) # -star_rating-별점높은순, -created_at-최신순
 
-        review_info = [{'user' : review.user.name,
+        review_info = [{'user'         : review.user.name,
                         'review_image' : review.image_url,
-                        'content' : review.content,
-                        'created_at' : review.created_at,
-                        'star_rating' : review.star_rating
+                        'content'      : review.content,
+                        'created_at'   : review.created_at,
+                        'star_rating'  : review.star_rating
                         } for review in reviews]
 
         return JsonResponse({'result' : review_info, 'rates' : star_rates(product_title)}, status=200)
