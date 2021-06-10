@@ -1,7 +1,6 @@
 from .models import Product
 
 def star_rates(product):    
-
     product = Product.objects.get(title=product)
     reviews = product.review_set.all()
     
