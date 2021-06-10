@@ -10,12 +10,10 @@ from django.db.models import Q
 from biskit_settings  import SECRET_KEY
 from .models          import User
 
-
 class SignUpView(View):
-
     def post(self,request):
         data = json.loads(request.body)
-        
+
         try:
             name     = data['name']
             account  = data['account']
@@ -30,7 +28,7 @@ class SignUpView(View):
             mobile_Regex    = '\d{3,4}-\d{4}'
             name_Regex      = '[가-힣]'
             hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
+             
             q = Q()
 
             if ('' == account) or ('' == password):
@@ -59,6 +57,4 @@ class SignUpView(View):
             return JsonResponse({'message':'SUCCESS'}, status= 201)
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
-        except User.DoesNotExist:
-            return JsonResponse({'message':'USER_DOSE_NOT_EXIST'}, status=400)
-            
+       
