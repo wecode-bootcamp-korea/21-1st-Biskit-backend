@@ -3,7 +3,6 @@ from django.http      import JsonResponse
 from django.db.models import Avg, Count
 
 from .models     import Product
-from .star_rates import star_rates
 
 class ProductDetailView(View):
     def get(self, request, product_title):
@@ -47,7 +46,7 @@ class ProductReviewVeiw(View):
                         'created_at'   : review.created_at,
                         'star_rating'  : review.star_rating
                         } for review in reviews]
-                        
+
         review_info.append(product.review_set.aggregate(avg=Avg('star_rating'),count=Count('star_rating')))
 
         return JsonResponse({'result' : review_info}, status=200)
