@@ -1,9 +1,23 @@
+import csv
 import os
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "biskit.settings")
+
 import django
-import sys
 
-os.chdir(".")
-print("Current dir=" ,  end= ""), print(os.getcwd())
+django.setup()
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath))
-print(BASE_DIR="")
+from users.models import *
+
+CSV_PATH = './user_info.csv'
+with open(CSV_PATH, newline='') as csvfile:
+    data_reader = csv.DictReader(csvfile)
+    for row in data_reader:
+        User.objects.create(
+            name     = row['name'],
+            account  = row['account'],
+            password = row['mobile'],
+            address  = row['address'],
+            mobile   = row['mobile'],
+            email    = row['email']
+        )
