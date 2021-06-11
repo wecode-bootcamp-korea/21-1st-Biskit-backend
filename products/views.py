@@ -1,11 +1,11 @@
-from django.views import View
-from django.http  import JsonResponse
+from django.views     import View
+from django.http      import JsonResponse
+from django.db.models import Avg, Count
 
-from .models import Product
+from .models     import Product
 
 class ProductDetailView(View):
     def get(self, request, product_title):
-
         product = Product.objects.get(title=product_title)
         
         tastes       = product.tasteproduct_set.all()
@@ -29,3 +29,24 @@ class ProductDetailView(View):
         }
 
         return JsonResponse({'result' : product_info}, status=200)
+
+class ProductReviewVeiw(View):
+    def get(self, request, product_title):
+        order   = request.GET.get('sort')
+        product = Product.objects.get(title=product_title)
+
+        if order == None:
+            reviews = product.review_set.all()
+        else:
+            reviews = product.review_set.order_by(order) # -star_rating-별점높은순, -created_at-최신순
+
+        review_info = [{'user'         : review.user.name,
+                        'review_image' : review.image_url,
+                        'content'      : review.content,
+                        'created_at'   : review.created_at,
+                        'star_rating'  : review.star_rating
+                        } for review in reviews]
+
+        review_info.append(product.review_set.aggregate(avg=Avg('star_rating'),count=Count('star_rating')))
+
+        return JsonResponse({'result' : review_info}, status=200)
