@@ -9,7 +9,7 @@ django.setup()
 
 from users.models import *
 
-CSV_PATH = './user_info.csv'
+CSV_PATH = 'csv/user_info.csv'
 with open(CSV_PATH, newline='') as csvfile:
     data_reader = csv.DictReader(csvfile)
     for row in data_reader:

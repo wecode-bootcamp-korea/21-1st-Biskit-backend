@@ -3,7 +3,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,macos,linux,zsh
 
 biskit_settings.py
-
+db_upload.py
+*.csv
 ### Linux ###
 *~
 
