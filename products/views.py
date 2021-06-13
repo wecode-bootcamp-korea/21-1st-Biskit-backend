@@ -1,6 +1,7 @@
 from django.views     import View
 from django.http      import JsonResponse
 from django.db.models import Avg, Count
+from django.core.paginator import Paginator, EmptyPage
 
 from .models     import Product
 
@@ -33,8 +34,9 @@ class ProductDetailView(View):
 class ProductReviewVeiw(View):
     def get(self, request, product_title):
         order   = request.GET.get('sort')
+        page    = request.GET.get('page', 1)
         product = Product.objects.get(title=product_title)
-
+        
         if order == None:
             reviews = product.review_set.all()
         else:
@@ -49,4 +51,7 @@ class ProductReviewVeiw(View):
 
         review_info.append(product.review_set.aggregate(avg=Avg('star_rating'),count=Count('star_rating')))
 
-        return JsonResponse({'result' : review_info}, status=200)
+        paginator = Paginator(review_info, 10)
+        users     = paginator.page(page)
+
+        return JsonResponse({'result' : users.object_list}, status=200)
