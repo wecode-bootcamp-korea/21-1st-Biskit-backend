@@ -1,9 +1,9 @@
-from django.views     import View
-from django.http      import JsonResponse
-from django.db.models import Avg, Count
-from django.core.paginator import Paginator, EmptyPage
+from django.views          import View
+from django.http           import JsonResponse
+from django.db.models      import Avg, Count
+from django.core.paginator import Paginator
 
-from .models     import Product
+from .models               import Product
 
 class ProductDetailView(View):
     def get(self, request, product_title):
