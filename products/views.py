@@ -1,7 +1,10 @@
+import math
+
 from django.views     import View
 from django.http      import JsonResponse
+from django.db.models import F, Q, Avg
 
-from products.models  import Product
+from products.models  import Product, ProductImage
 
 class ProductDetailView(View):
     def get(self, request, product_title):
@@ -28,22 +31,43 @@ class ProductDetailView(View):
         }
 
         return JsonResponse({'result' : product_info}, status=200)
-
+ 
 class ProductList(View):
     def get(self, request):
-        products = Product.objects.all()
+        sort     = request.GET.get('sort', 'id')
+        day      = request.GET.get('day')
+        taste    = request.GET.get('taste')
+        page     = int(request.GET.get('page', 1))
+        per_page = int(request.GET.get('per_page', 20))
+        
+        products = Product.objects.annotate(
+            rating=Avg('review__star_rating'), day=F('dayproduct__day'), taste=F('tasteproduct__taste')).filter(
+                Q(day=day)|Q(taste=taste)).order_by(sort)
+        
+        objects_count = products.count()
+        
+        if page > 0 and per_page > 0:
+            started  = (page - 1) * per_page
+            ended    = started + per_page
+            products = products[started:ended]
 
-        result = [{
+        result = {
+            'count' : objects_count,
+            'page' : page,
+            'per_page' : per_page,
+            'pages' : math.ceil(objects_count/per_page),
+            'elements' : products.count()
+        }
+        
+        result['result'] = [{
             'title'     : product.title,
             'sub_title' : product.sub_title,
             'price'     : product.price,
             'calorie'   : product.calorie,
             'gram'      : product.gram,
-            'taste'     : [taste.taste.name for taste in product.tasteproduct_set.all()] ,
+            'taste'     : [taste.taste.name for taste in product.tasteproduct_set.all()],
             'images'    : '' if product.productimage_set.all().first() == None else product.productimage_set.all().first().image_url
         } for product in products]
 
-        return JsonResponse({'result' : result}, status=200)
-
-        
+        return JsonResponse(result, status=200)
 
