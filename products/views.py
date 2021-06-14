@@ -2,7 +2,7 @@ import math
 
 from django.views     import View
 from django.http      import JsonResponse
-from django.db.models import F, Q, Avg, Count
+from django.db.models import F, Avg, Count
 
 from products.models  import Product
 
@@ -62,8 +62,12 @@ class ProductList(View):
         per_page = int(request.GET.get('per_page', 20))
         
         products = Product.objects.annotate(
-            rating=Avg('review__star_rating'), day=F('dayproduct__day'), taste=F('tasteproduct__taste')).filter(
-                Q(day=day)|Q(taste=taste)).order_by(sort)
+            rating=Avg('review__star_rating'), day=F('dayproduct__day'), taste=F('tasteproduct__taste')).order_by(sort)
+
+        if day != None:
+            products = products.filter(day=day).order_by(sort)
+        if taste != None:
+            products = products.filter(taste=taste).order_by(sort)
         
         objects_count = products.count()
         
@@ -92,4 +96,3 @@ class ProductList(View):
         } for product in products]
 
         return JsonResponse(result, status=200)
-
