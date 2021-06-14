@@ -50,9 +50,9 @@ class ProductReviewVeiw(View):
 
         product_rate = product.review_set.aggregate(avg=Avg('star_rating'),count=Count('star_rating'))
 
-        page_size = 10
-        limit     = page_size * page
-        offset    = limit - page_size
+        PAGE_SIZE = 10
+        limit     = PAGE_SIZE * page
+        offset    = limit - PAGE_SIZE
 
         if review_info[offset:limit] == []:
             return JsonResponse({'result' : review_info[0:9], 'product_rate' : product_rate}, status=200)
