@@ -22,4 +22,11 @@ class OrderItem(models.Model):
     order       = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'order_items'  
+        db_table = 'order_items'
+
+class DeliveryDate(models.Model):
+    date = models.CharField(max_length=4)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'delivery_dates'
