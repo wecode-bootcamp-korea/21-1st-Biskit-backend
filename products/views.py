@@ -60,6 +60,7 @@ class ProductList(View):
         }
         
         result['result'] = [{
+            'id'        : product.id,
             'title'     : product.title,
             'sub_title' : product.sub_title,
             'price'     : product.price,
