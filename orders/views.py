@@ -21,7 +21,6 @@ class OrderitemView(View):
             quantity  = int(data['quantity'])
             total_price = int(data['total'])
 
-
             if  quantity > product.stock:
                 return JsonResponse({'message':'The maximum quantity is {}.'.format(product.stock)},status=400)
 
