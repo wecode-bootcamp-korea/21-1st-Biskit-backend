@@ -12,7 +12,7 @@ from .models          import User
 class SignUpView(View):
     def post(self,request):
         data = json.loads(request.body)
-
+        
         try:
             name     = data['name']
             account  = data['account']
@@ -27,7 +27,7 @@ class SignUpView(View):
             mobile_Regex    = '\d{3,4}-\d{4}'
             name_Regex      = '[가-힣]'
             hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-             
+            
             if ('' == account) or ('' == password):
                 return JsonResponse({'message':'VALUE_IS_EMPTY'}, status=400)
             if not re.match(account_Regex, account):
