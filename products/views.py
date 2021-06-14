@@ -4,7 +4,7 @@ from django.views     import View
 from django.http      import JsonResponse
 from django.db.models import F, Q, Avg
 
-from products.models  import Product, ProductImage
+from products.models  import Product
 
 class ProductDetailView(View):
     def get(self, request, product_title):
@@ -52,10 +52,10 @@ class ProductList(View):
             products = products[started:ended]
 
         result = {
-            'count' : objects_count,
-            'page' : page,
+            'count'    : objects_count,
+            'page'     : page,
             'per_page' : per_page,
-            'pages' : math.ceil(objects_count/per_page),
+            'pages'    : math.ceil(objects_count/per_page),
             'elements' : products.count()
         }
         
@@ -70,4 +70,3 @@ class ProductList(View):
         } for product in products]
 
         return JsonResponse(result, status=200)
-
