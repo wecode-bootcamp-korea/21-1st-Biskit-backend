@@ -3,12 +3,10 @@ import json
 from django.views     import View
 from django.http      import JsonResponse, request
 from django.db        import transaction
-from django.db.models import F
-
 
 from .models          import Status, Order, OrderItem
 from users.decorators import login_decorator
-from products.models  import Product, ProductImage
+from products.models  import Product
 
 
 
@@ -19,9 +17,13 @@ class OrderitemView(View):
             data      = json.loads(request.body)
             user      = request.user
             product   = Product.objects.get(title=data['title'])
-            product   = Product.objects.get(price=data['price'])
             status    = Status.objects.get(status=data['status'])
             quantity  = int(data['quantity'])
+            total_price = int(data['total'])
+
+
+            if  quantity > product.stock:
+                return JsonResponse({'message':'The maximum quantity is {}.'.format(product.stock)},status=400)
 
             order = Order.objects.create(
                 product = product,
@@ -29,7 +31,7 @@ class OrderitemView(View):
             )
             OrderItem.objects.create(
                 product     = product,
-                total_price = quantity*product.price,
+                total_price = total_price,
                 user        = user,
                 order       = order
             )
@@ -40,37 +42,20 @@ class OrderitemView(View):
     
     @login_decorator 
     def get(self,request):
-        try:
-           cart_list=OrderItem.objects.all()
+           cart_list=OrderItem.objects.filter(user_id=request.user.id)
            reslut=[]
            for usercart in cart_list:
-               image =ProductImage.objects.filter(product_id=usercart.product.id)
+               image_url=[]
+               image =usercart.product.productimage_set.all()
                for url in image:
-                   image=[ ]
                    img_info={
-                   'img':url.image_url}
-                   image.append(img_info)
+                   'img':url.image_url}     
+                   image_url.append(img_info)
                info={
                    'title':usercart.product.title,
                    'price':usercart.product.price,
-                   'total_price':usercart.total_price,
-                   'image':image
+                   'image':image_url
                }
                reslut.append(info)
  
            return JsonResponse({'message':reslut},status=200)
-
-        except AttributeError:
-            return JsonResponse({'message':'SEVER ERROR'},status=500)
-
-    
-
-
-        
-
-        
-
-
-        
-
-   
