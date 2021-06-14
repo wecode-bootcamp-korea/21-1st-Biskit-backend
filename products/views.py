@@ -3,6 +3,7 @@ from django.http  import JsonResponse
 
 from .models import Product
 
+
 class ProductDetailView(View):
     def get(self, request, product_title):
 
