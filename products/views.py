@@ -35,8 +35,9 @@ class ProductDetailView(View):
 class ProductReviewVeiw(View):
     def get(self, request, product_title):
         order   = request.GET.get('sort')
+        page    = int(request.GET.get('page', 1))
         product = Product.objects.get(title=product_title)
-
+        
         if order == None:
             reviews = product.review_set.all()
         else:
@@ -49,9 +50,16 @@ class ProductReviewVeiw(View):
                         'star_rating'  : review.star_rating
                         } for review in reviews]
 
-        review_info.append(product.review_set.aggregate(avg=Avg('star_rating'),count=Count('star_rating')))
+        product_rate = product.review_set.aggregate(avg=Avg('star_rating'),count=Count('star_rating'))
 
-        return JsonResponse({'result' : review_info}, status=200)
+        PAGE_SIZE = 10
+        limit     = PAGE_SIZE * page
+        offset    = limit - PAGE_SIZE
+
+        if review_info[offset:limit] == []:
+            return JsonResponse({'result' : review_info[0:9], 'product_rate' : product_rate}, status=200)
+
+        return JsonResponse({'result' : review_info[offset:limit-1], 'product_rate' : product_rate}, status=200)
          
 class ProductList(View):
     def get(self, request):
