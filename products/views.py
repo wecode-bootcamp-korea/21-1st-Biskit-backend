@@ -67,7 +67,7 @@ class ProductList(View):
         day      = request.GET.get('day')
         taste    = request.GET.get('taste')
         page     = int(request.GET.get('page', 1))
-        per_page = int(request.GET.get('per_page', 20))
+        PER_PAGE = 20
         
         products = Product.objects.annotate(
             rating=Avg('review__star_rating'), day=F('dayproduct__day'), taste=F('tasteproduct__taste')).order_by(sort)
@@ -78,29 +78,32 @@ class ProductList(View):
             products = products.filter(taste=taste).order_by(sort)
         
         objects_count = products.count()
-        
-        if page > 0 and per_page > 0:
-            started  = (page - 1) * per_page
-            ended    = started + per_page
-            products = products[started:ended]
+        pages         = math.ceil(objects_count/PER_PAGE)
 
-        result = {
-            'count'    : objects_count,
-            'page'     : page,
-            'per_page' : per_page,
-            'pages'    : math.ceil(objects_count/per_page),
-            'elements' : products.count()
-        }
-        
-        result['result'] = [{
+        if page <= 0 or page > pages:
+            return JsonResponse({'message' : 'PAGE_NOT_FOUND'}, status=404)
+            
+        started  = (page - 1) * PER_PAGE
+        ended    = started + PER_PAGE
+        products = products[started:ended]
+
+        result = [{
             'id'        : product.id,
             'title'     : product.title,
             'sub_title' : product.sub_title,
             'price'     : product.price,
             'calorie'   : product.calorie,
             'gram'      : product.gram,
-            'taste'     : [taste.taste.name for taste in product.tasteproduct_set.all()],
-            'images'    : '' if product.productimage_set.all().first() == None else product.productimage_set.all().first().image_url
+            'taste'     : None if product.tasteproduct_set.first() == None else product.tasteproduct_set.first().taste.name,
+            'images'    : None if product.productimage_set.first() == None else product.productimage_set.first().image_url
         } for product in products]
 
-        return JsonResponse(result, status=200)
+        result.append({
+            'count'    : objects_count,
+            'page'     : page,
+            'per_page' : PER_PAGE,
+            'pages'    : pages,
+            'elements' : products.count()
+        })
+
+        return JsonResponse({'result' : result}, status=200)
