@@ -67,6 +67,7 @@ class ProductList(View):
         day      = request.GET.get('day')
         taste    = request.GET.get('taste')
         page     = int(request.GET.get('page', 1))
+        per_page = request.GET.get('per_page')
         PER_PAGE = 20
         
         products = Product.objects.annotate(
@@ -82,6 +83,9 @@ class ProductList(View):
 
         if page <= 0 or page > pages:
             return JsonResponse({'message' : 'PAGE_NOT_FOUND'}, status=404)
+
+        if per_page != None:
+            PER_PAGE = 6
             
         started  = (page - 1) * PER_PAGE
         ended    = started + PER_PAGE
@@ -94,8 +98,8 @@ class ProductList(View):
             'price'     : product.price,
             'calorie'   : product.calorie,
             'gram'      : product.gram,
-            'taste'     : None if product.tasteproduct_set.first() == None else product.tasteproduct_set.first().taste.name,
-            'images'    : None if product.productimage_set.first() == None else product.productimage_set.first().image_url
+            'taste'     : None if product.tasteproduct_set.first() is None else product.tasteproduct_set.first().taste.name,
+            'images'    : None if product.productimage_set.first() is None else product.productimage_set.first().image_url
         } for product in products]
 
         result.append({
