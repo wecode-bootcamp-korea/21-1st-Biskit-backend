@@ -53,4 +53,4 @@ class ProductReviewVeiw(View):
         if review_info[offset:limit] == []:
             return JsonResponse({'result' : review_info[0:9], 'product_rate' : product_rate}, status=200)
 
-        return JsonResponse({'result' : review_info[offset:limit-1], 'product_rate' : product_rate}, status=200)
+        return JsonResponse({'result' : review_info[offset:limit-1], 'product_rate' : product_rate}, status=200)  
