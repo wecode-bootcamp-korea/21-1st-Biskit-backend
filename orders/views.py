@@ -23,17 +23,17 @@ class OrderitemView(View):
             if  quantity > product.stock:
                 return JsonResponse({'message':'The maximum quantity is {}.'.format(product.stock)},status=400)
 
-            DeliveryDate.objects.create(
-                date = date
-            )
+            # DeliveryDate.objects.create(
+            #     date = date,
+            #     order_item =)
             
+            order=Order.objects.all()
 
-            OrderItem.objects.create(
+            cart=OrderItem.objects.create(
                 product     = product.title,
                 total_price = total_price,
                 user        = request.user,
-              order_id      = 
-                )
+                order       = order.requset.user)
             
 
 
