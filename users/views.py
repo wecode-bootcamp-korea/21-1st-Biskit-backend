@@ -18,8 +18,7 @@ class AccountCheckView(View):
 
             if User.objects.filter(account = account).exists():
                 return JsonResponse({'message':'ALREADY_EXISTS'}, status=400)
-            else: 
-                return JsonResponse({'message':'SUCCESS'}, status=200) 
+            return JsonResponse({'message':'SUCCESS'}, status=200) 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
 
@@ -67,14 +66,14 @@ class SignInView(View):
         data = json.loads(request.body)
 
         try:
-            account     = data['account']
-            password    = data['password']
-            user        = User.objects.get(account=account)
+            account  = data['account']
+            password = data['password']
+            user     = User.objects.get(account=account)
           
             if not User.objects.filter(account=data['account']).exists():
                 return JsonResponse({'message':'INVALID_USER'}, status=401)
             if not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
-                return JsonResponse({'message':'WRONG_PASSWORD'}, status= 200)
+                return JsonResponse({'message':'WRONG_PASSWORD'}, status= 400)
             token = jwt.encode({'user_id':user.id}, SECRET_KEY, ALGORITHM)
             return JsonResponse({'token':token}, status=200)
         except KeyError: 
