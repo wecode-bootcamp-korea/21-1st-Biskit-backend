@@ -4,7 +4,7 @@ from django.views     import View
 from django.http      import JsonResponse, request
 from django.db        import transaction
 
-from .models          import Status, Order, OrderItem
+from .models          import Status, Order, OrderItem, DeliveryDate
 from users.decorators import login_decorator
 from products.models  import Product
 
@@ -15,29 +15,33 @@ class OrderitemView(View):
     def post(self,request):
         try:
             data      = json.loads(request.body)
-            user      = request.user
-            product   = Product.objects.get(title=data['title'])
-            status    = Status.objects.get(status=data['status'])
+            product   = Product.objects.get(id=data['id'])
             quantity  = int(data['quantity'])
             total_price = int(data['total'])
+            date        = data['date']
 
             if  quantity > product.stock:
                 return JsonResponse({'message':'The maximum quantity is {}.'.format(product.stock)},status=400)
 
-            order = Order.objects.create(
-                product = product,
-                status  = status,
-            )
-            OrderItem.objects.create(
-                product     = product,
-                total_price = total_price,
-                user        = user,
-                order       = order
+            DeliveryDate.objects.create(
+                date = date
             )
             
+
+            OrderItem.objects.create(
+                product     = product.title,
+                total_price = total_price,
+                user        = request.user,
+              order_id      = 
+                )
+            
+
+
             return JsonResponse({'message':'SUCCESS'},status=201)
         except KeyError:
             return JsonResponse ({'message':'KEY_ERROR'},status=400)
+
+
     
     @login_decorator 
     def get(self,request):
