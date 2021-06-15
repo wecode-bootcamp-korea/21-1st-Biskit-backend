@@ -59,11 +59,11 @@ class ProductReviewVeiw(View):
          
 class ProductList(View):
     def get(self, request):
-        sort     = request.GET.get('sort', 'id')
+        sort     = request.GET.get('sort', '-created_at')
         day      = request.GET.get('day')
         taste    = request.GET.get('taste')
         page     = int(request.GET.get('page', 1))
-        per_page = request.GET.get('per_page')
+        per_page = int(request.GET.get('per_page'))
         PER_PAGE = 20
         
         products = Product.objects.annotate(
@@ -89,13 +89,15 @@ class ProductList(View):
 
         result = [{
             'id'        : product.id,
+            'rating'    : None if product.rating is None else round(product.rating,1),
             'title'     : product.title,
             'sub_title' : product.sub_title,
             'price'     : product.price,
             'calorie'   : product.calorie,
             'gram'      : product.gram,
             'taste'     : None if product.tasteproduct_set.first() is None else product.tasteproduct_set.first().taste.name,
-            'images'    : None if product.productimage_set.first() is None else product.productimage_set.first().image_url
+            'images'    : None if product.productimage_set.first() is None else product.productimage_set.first().image_url,
+            'reviews'   : product.review_set.aggregate(count=Count('star_rating'))['count']
         } for product in products]
 
         result.append({
