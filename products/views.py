@@ -5,10 +5,9 @@ from django.db.models      import Avg, Count
 from .models               import Product
 
 class ProductDetailView(View):
-    def get(self, request, product_title):
-        product = Product.objects.get(title=product_title)
+    def get(self, request, product_id):
+        product = Product.objects.get(id=product_id)
         
-        tastes       = product.tasteproduct_set.all()
         images       = product.productimage_set.all()
         descriptions = product.description_set.all()
         
@@ -19,7 +18,7 @@ class ProductDetailView(View):
             'gram'             : product.gram,
             'calorie'          : product.calorie,
             'detail_image'     : [image.image_url for image in images],
-            'taste'            : [taste.taste.name for taste in tastes],
+            'taste'            : product.tasteproduct_set.first().taste.name,
             'description_info' : [{
                                     'detail'      : description.detail,
                                     'information' : description.information,
@@ -31,15 +30,12 @@ class ProductDetailView(View):
         return JsonResponse({'result' : product_info}, status=200)
 
 class ProductReviewVeiw(View):
-    def get(self, request, product_title):
-        order   = request.GET.get('sort')
+    def get(self, request, product_id):
+        order   = request.GET.get('sort', 'id')
         page    = int(request.GET.get('page', 1))
-        product = Product.objects.get(title=product_title)
-        
-        if order == None:
-            reviews = product.review_set.all()
-        else:
-            reviews = product.review_set.order_by(order) # -star_rating-별점높은순, -created_at-최신순
+        product = Product.objects.get(id=product_id)
+    
+        reviews = product.review_set.order_by(order)
 
         review_info = [{'user'         : review.user.name,
                         'review_image' : review.image_url,
