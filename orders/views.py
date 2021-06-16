@@ -5,13 +5,11 @@ from django.http     import JsonResponse
 from django.db       import transaction
 
 from .models         import DeliveryDate, Order, OrderItem, Status
-from users.models    import User
 from products.models import Product
 from users.decorator import login_decorator
 
 class CartView(View):
     @login_decorator
-    #@transaction.atomic
     def post(self, request):
         data          = json.loads(request.body)
         user          = request.user
@@ -24,6 +22,7 @@ class CartView(View):
         if Order.objects.filter(user=user, orderitem__product=product).exists():
             add_quantity = order_product.orderitem_set.get(product=product)
             add_quantity.quantity += quantity
+            add_quantity.total_price += total_price
             add_quantity.save()
 
             return JsonResponse({'message' : 'SUCCESS'}, status=200)
@@ -61,7 +60,8 @@ class CartView(View):
         } for cart in carts]
 
         return JsonResponse({'result' : cart_info}, status=200)
-        
+
+class CartDeleteView(View):
     @login_decorator
     def delete(self, request, product_id):
         user    = request.user
