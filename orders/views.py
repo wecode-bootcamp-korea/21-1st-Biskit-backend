@@ -51,31 +51,3 @@ class OrderitemView(View):
             delivey.save()
 
         return JsonResponse({"MESSAGE":"SUCCESS"},status=201)
-        
-        
-        
-
-
-
-
-
-    
-    # @login_decorator 
-    # def get(self,request):
-    #        cart_list=OrderItem.objects.filter(user_id=request.user.id)
-    #        reslut=[]
-    #        for usercart in cart_list:
-    #            image_url=[]
-    #            image =usercart.product.productimage_set.all()
-    #            for url in image:
-    #                img_info={
-    #                'img':url.image_url}     
-    #                image_url.append(img_info)
-    #            info={
-    #                'title':usercart.product.title,
-    #                'price':usercart.product.price,
-    #                'image':image_url
-    #            }
-    #            reslut.append(info)
- 
-    #        return JsonResponse({'message':reslut},status=200)
