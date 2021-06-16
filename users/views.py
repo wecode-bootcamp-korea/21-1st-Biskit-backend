@@ -47,17 +47,12 @@ class SignUpView(View):
 
             if ('' == account) or ('' == password):
                 return JsonResponse({'message':'VALUE_IS_EMPTY'}, status=400)
-<<<<<<< HEAD
-            # if not re.match (account_Regex, account) or (name_Regex, name) or (email_Regex, email) or (password_Regex, password) or (mobile_Regex, mobile):
-            #     return JsonResponse({'message':'INVALID_FORMAT'}, status=400)   
-=======
             if not re.match(account_Regex, account) or\
                not re.match(password_Regex, password) or\
                not re.match(mobile_Regex, mobile) or\
                not re.match(name_Regex, name) or\
                not re.match(email_Regex, email):
                 return JsonResponse({'message':'INVALID_FORMAT'}, status=400)
->>>>>>> main
             if User.objects.filter(account = account).exists():
                 return JsonResponse({'message':'ALREADY_EXISTS'}, status=400)
 
