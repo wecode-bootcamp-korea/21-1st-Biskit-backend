@@ -1,4 +1,3 @@
-from products.models import Review
 from django.urls import path
 
 from .views      import ProductDetailView, ProductReviewVeiw
