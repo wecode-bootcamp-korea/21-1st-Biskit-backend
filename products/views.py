@@ -2,7 +2,7 @@ import math
 
 from django.views     import View
 from django.http      import JsonResponse
-from django.db.models import F, Avg, Count
+from django.db.models import F, Avg, Count, Q
 
 from products.models  import Product
 
@@ -107,5 +107,29 @@ class ProductList(View):
             'pages'    : pages,
             'elements' : products.count()
         })
+
+        return JsonResponse({'result' : result}, status=200)
+    
+class SearchView(View):
+    def get(self,request):
+        
+        search_word = request.GET.get('search_word', None)
+        products    = Product.objects.order_by('-created_at')
+        
+        if search_word: 
+            products = Product.objects.filter(Q(title__icontains=search_word) | Q(sub_title__icontains=search_word))
+
+        result =[{
+            'id'           : product.id,
+            'title'        : product.title,
+            'sub_title'    : product.sub_title,
+            'price'        : product.price,
+            'detail_image' : product.productimage_set.first().image_url,
+            'taste'        : product.tasteproduct_set.first().taste.name,
+            'calorie'      : product.calorie,
+            'gram'         : product.gram,
+            'review'       : product.review_set.first().content,
+            'star_rating'  : product.review_set.aggregate(average=Avg('star_rating'))['average']
+         }for product in products]
 
         return JsonResponse({'result' : result}, status=200)
