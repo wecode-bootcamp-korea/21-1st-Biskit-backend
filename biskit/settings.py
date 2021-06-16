@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
-from biskit_settings import SECRET_KEY, DATABASES, ALGORITHM
+from biskit_settings import SECRET_KEY, DATABASES, ALGROITHM
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +25,7 @@ APPEND_SLASH = False
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SECRET_KEY
-ALGORITHM  = ALGORITHM
+ALGROITHM  = ALGROITHM
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

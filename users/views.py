@@ -7,7 +7,7 @@ from django.views     import View
 from django.http      import JsonResponse
 
 from .models          import User
-from biskit_settings  import SECRET_KEY,ALGORITHM
+from biskit_settings  import SECRET_KEY,ALGROITHM
 
 class AccountCheckView(View):
     def post(self,request):
