@@ -27,6 +27,7 @@ class CartView(View):
                 cart.quantity += quantity
                 cart.total_price += total_price
                 cart.save()
+                
             return JsonResponse({"message" : "SUCCESS"}, status=200)
 
         with transaction.atomic():
