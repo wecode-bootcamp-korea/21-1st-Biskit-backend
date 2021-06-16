@@ -7,7 +7,7 @@ from django.db        import transaction
 
 from .models          import Status, Order, OrderItem, DeliveryDate
 from users.models     import User 
-from users.decorators import login_decorator
+from users.decorator import login_decorator
 from products.models  import Product
 
 class OrderitemView(View):
@@ -26,6 +26,7 @@ class OrderitemView(View):
             user_cart = OrderItem.objects.filter(order__status=status, order__user=user, product_id=product)
             for cart in user_cart:
                 cart.quantity += quantity
+                cart.total_price += total_price
                 cart.save()
             return JsonResponse({"MESSAGE":"SUCCESS"}, status=200)
     

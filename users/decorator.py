@@ -2,14 +2,14 @@ import jwt
 
 from django.http import JsonResponse
 
-from biskit_settings import ALGORITHM, SECRET_KEY
+from biskit_settings import SECRET_KEY,ALGROITHM
 from .models         import User
 
 def login_decorator(func):
     def wrapper(self, request, *args, **kwargs):    
         try:
             token        = request.headers.get('Authorization', None)
-            token_data   = jwt.decode(token, SECRET_KEY, ALGORITHM)
+            token_data   = jwt.decode(token, SECRET_KEY, ALGROITHM)
             user         = User.objects.get(id=token_data['user_id'])
             request.user = user
 
