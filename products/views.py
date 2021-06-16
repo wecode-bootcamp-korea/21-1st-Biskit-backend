@@ -6,7 +6,6 @@ from django.db.models import F, Avg, Count, Q
 
 from products.models  import Product
 
-
 class ProductDetailView(View):
     def get(self, request, product_id):
         product = Product.objects.get(id=product_id)
