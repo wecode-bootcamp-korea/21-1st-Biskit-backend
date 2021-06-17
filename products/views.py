@@ -8,38 +8,36 @@ from products.models  import Product
 
 class ProductDetailView(View):
     def get(self, request, product_id):
-        product = Product.objects.get(id=product_id)
-        
-        images       = product.productimage_set.all()
-        descriptions = product.description_set.all()
+        product     = Product.objects.get(id=product_id)
+        description = product.description_set.first()
         
         product_info = {
-            'title'            : product.title,
-            'sub_title'        : product.sub_title,
-            'price'            : product.price,
-            'gram'             : product.gram,
-            'calorie'          : product.calorie,
-            'detail_image'     : [image.image_url for image in images],
-            'taste'            : product.tasteproduct_set.first().taste.name,
-            'description_info' : [{
-                                    'detail'      : description.detail,
-                                    'information' : description.information,
-                                    'delivery'    : description.delivery,
-                                    'refund'      : description.refund
-                                } for description in descriptions]
+            'title'        : product.title,
+            'sub_title'    : product.sub_title,
+            'price'        : int(product.price),
+            'gram'         : product.gram,
+            'calorie'      : product.calorie,
+            'detail_image' : [image.image_url for image in product.productimage_set.all()],
+            'taste'        : product.tasteproduct_set.first().taste.name,
+            'detail'       : description.detail,
+            'information'  : description.information,
+            'delivery'     : description.delivery,
+            'refund'       : description.refund
         }
 
         return JsonResponse({'result' : product_info}, status=200)
 
 class ProductReviewVeiw(View):
     def get(self, request, product_id):
-        order   = request.GET.get('sort', 'id')
-        page    = int(request.GET.get('page', 1))
-        product = Product.objects.get(id=product_id)
-    
+        order     = request.GET.get('sort', 'id')
+        page      = int(request.GET.get('page', 1))
+        per_page  = int(request.GET.get('per_page', 0))
+        product   = Product.objects.get(id=product_id)
+        PAGE_SIZE = 10
+
         reviews = product.review_set.order_by(order)
 
-        review_info = [{'user'         : review.user.name,
+        review_info = [{'user'         : review.user.account,
                         'review_image' : review.image_url,
                         'content'      : review.content,
                         'created_at'   : review.created_at,
@@ -48,7 +46,20 @@ class ProductReviewVeiw(View):
 
         product_rate = product.review_set.aggregate(avg=Avg('star_rating'),count=Count('star_rating'))
 
-        PAGE_SIZE = 10
+        if per_page != 0:
+            review_info = []
+            products = Product.objects.order_by('-created_at')[:4]
+            for product in products:
+                review = product.review_set.first()
+                review_info.append({
+                'user'         : review.user.account,
+                'review_image' : review.image_url,
+                'content'      : review.content,
+                'created_at'   : review.created_at,
+                'star_rating'  : review.star_rating
+                })
+            return JsonResponse({'result' : review_info}, status=200)
+
         limit     = PAGE_SIZE * page
         offset    = limit - PAGE_SIZE
 
@@ -63,7 +74,7 @@ class ProductList(View):
         day      = request.GET.get('day')
         taste    = request.GET.get('taste')
         page     = int(request.GET.get('page', 1))
-        per_page = int(request.GET.get('per_page'))
+        per_page = int(request.GET.get('per_page', 0))
         PER_PAGE = 20
         
         products = Product.objects.annotate(
@@ -80,8 +91,12 @@ class ProductList(View):
         if page <= 0 or page > pages:
             return JsonResponse({'message' : 'PAGE_NOT_FOUND'}, status=404)
 
-        if per_page != None:
+        if per_page == 1:
             PER_PAGE = 6
+        
+        if per_page == 2:
+            PER_PAGE = 3
+            products = products[:3]
             
         started  = (page - 1) * PER_PAGE
         ended    = started + PER_PAGE
@@ -89,14 +104,14 @@ class ProductList(View):
 
         result = [{
             'id'        : product.id,
-            'rating'    : None if product.rating is None else round(product.rating,1),
+            'rating'    : round(product.rating,1),
             'title'     : product.title,
             'sub_title' : product.sub_title,
-            'price'     : product.price,
+            'price'     : int(product.price),
             'calorie'   : product.calorie,
             'gram'      : product.gram,
-            'taste'     : None if product.tasteproduct_set.first() is None else product.tasteproduct_set.first().taste.name,
-            'images'    : None if product.productimage_set.first() is None else product.productimage_set.first().image_url,
+            'taste'     : product.tasteproduct_set.first().taste.name,
+            'images'    : product.productimage_set.first().image_url,
             'reviews'   : product.review_set.aggregate(count=Count('star_rating'))['count']
         } for product in products]
 
