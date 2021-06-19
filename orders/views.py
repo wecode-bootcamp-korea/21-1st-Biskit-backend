@@ -18,13 +18,13 @@ class CartView(View):
         product     = Product.objects.get(id=data['product_id'])
         quantity    = int(data['quantity'])
         total_price = int(data['total_price'])
-        user   = User.objects.get(id=request.user.id)
-        status = Status.objects.get(id=1)
+        user        = User.objects.get(id=request.user.id)
+        status      = Status.objects.get(id=1)
         
         if OrderItem.objects.filter(Q(order__status=status)&Q(order__user=user)&Q(product_id=product.id)).exists():
             user_cart = OrderItem.objects.filter(order__status=status, order__user=user, product_id=product)
             for cart in user_cart:
-                cart.quantity += quantity
+                cart.quantity    += quantity
                 cart.total_price += total_price
                 cart.save()
                 
@@ -46,7 +46,7 @@ class CartView(View):
                 order_item = order_item
                 )
 
-        return JsonResponse({"message" : "SUCCESS"},status=201)
+        return JsonResponse({"message" : "SUCCESS"}, status=201)
 
     @login_decorator
     def get(self, request):
@@ -69,7 +69,21 @@ class CartDeleteView(View):
     def delete(self, request, product_id):
         user    = request.user
         product = Product.objects.get(id=product_id)
+        status  = Status.objects.get(id=1)
 
-        Order.objects.filter(user=user, orderitem__product=product).delete()
+        Order.objects.filter(user=user, orderitem__product=product, status=status).delete()
+
+        return JsonResponse({'message' : 'SUCCESS'}, status=200)
+
+class DeleteView(View):
+    @login_decorator
+    def post(self, request):
+        data   = json.loads(request.body)
+        user   = request.user
+        status = Status.objects.get(id=1)
+
+        for i in data:
+            product = Product.objects.get(id=i)
+            Order.objects.filter(user=user, orderitem__product=product, status=status).delete()
 
         return JsonResponse({'message' : 'SUCCESS'}, status=200)

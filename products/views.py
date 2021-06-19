@@ -48,7 +48,7 @@ class ProductReviewVeiw(View):
 
         if per_page != 0:
             review_info = []
-            products = Product.objects.order_by('-created_at')[:4]
+            products    = Product.objects.order_by('-created_at')[:4]
             for product in products:
                 review = product.review_set.first()
                 review_info.append({
@@ -58,6 +58,7 @@ class ProductReviewVeiw(View):
                 'created_at'   : review.created_at,
                 'star_rating'  : review.star_rating
                 })
+
             return JsonResponse({'result' : review_info}, status=200)
 
         limit     = PAGE_SIZE * page
@@ -127,7 +128,6 @@ class ProductList(View):
     
 class SearchView(View):
     def get(self,request):
-        
         search_word = request.GET.get('search_word', None)
         products    = Product.objects.order_by('-created_at')
         
