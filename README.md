@@ -61,7 +61,7 @@ Common : <img src="https://img.shields.io/badge/Slack-4A154B?style=flat-square&l
 
 ## 👥 팀원
 
-- 프론트 : [권오현](https://github.com/im667), [신미영](https://github.com/smy0102), [전건우](https://github.com/fghjjkl32) (비스킷 프론트앤드팀 [깃허브](https://github.com/wecode-bootcamp-korea/21-1st-Biskit-frontend)
+- 프론트 : [권오현](https://github.com/im667), [신미영](https://github.com/smy0102), [전건우](https://github.com/fghjjkl32) (비스킷 프론트앤드팀 [깃허브](https://github.com/wecode-bootcamp-korea/21-1st-Biskit-frontend))
 - 벡엔드 : [김민규](https://github.com/SkyStar-K), [박창현](https://github.com/chp9419), [송준](https://github.com/riassuc), [이아란](https://github.com/araaaaan)
  
 
