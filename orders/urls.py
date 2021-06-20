@@ -1,13 +1,8 @@
 from django.urls import path
 
-from .views     import CartDeleteView, CartView, DeleteView
+from .views     import CartDeleteView, CartView
 
 urlpatterns = [
     path('', CartView.as_view()),
-<<<<<<< HEAD
     path('/delete', CartDeleteView.as_view())
-=======
-    path('/delete', DeleteView.as_view()),
-    path('/<int:product_id>', CartDeleteView.as_view())
->>>>>>> main
 ]
