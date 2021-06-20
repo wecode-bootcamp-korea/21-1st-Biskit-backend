@@ -46,7 +46,7 @@ class CartView(View):
                 order_item = order_item
                 )
 
-        return JsonResponse({"message" : "SUCCESS"},status=201)
+        return JsonResponse({"message" : "SUCCESS"}, status=201)
 
     @login_decorator
     def get(self, request):
@@ -65,21 +65,9 @@ class CartView(View):
 
         return JsonResponse({'result' : cart_info}, status=200)
 
-# class CartDeleteView(View):
-#     @login_decorator
-#     def delete(self, request, product_id):
-#         user    = request.user
-#         product = Product.objects.get(id=product_id)
-
-#         Order.objects.filter(user=user, orderitem__product=product).delete()
-
-#         return JsonResponse({'message' : 'SUCCESS'}, status=200)
-
-
 class CartDeleteView(View):
     @login_decorator
     def post(self, request):
-        # try:
         user     = request.user
         data     = json.loads(request.body)
         selected = data.get('selecteditemid')
@@ -89,26 +77,3 @@ class CartDeleteView(View):
             Order.objects.filter(user=user, orderitem__product_id=product.id).delete()
         
         return JsonResponse({'message' : 'SUCCESS'}, status=200)
-        # except JSONDecodeError:
-        #     return JsonResponse({'message' : '안와요ㅜㅜ'}, status=400)
-
-
-'''
-class CartDeleteView(View):
-    @login_decorator
-    def post(self, request):
-        user    = request.user
-        data = json.loads(request.body) 
-
-        if type(data) == int:
-            product = Product.objects.get(id=data)
-            Order.objects.filter(user=user, orderitem__product_id=product.id).delete()
-            return JsonResponse({'message' : 'SUCCESS'}, status=200)
-        
-        for product_id in data:
-            product = Product.objects.filter(id=product_id)
-                if len(product) != 0:
-                    Order.objects.filter(user=user, orderitem__product_id=product[0].id).delete()
-        
-        return JsonResponse({'message' : 'SUCCESS'}, status=200)
-'''
