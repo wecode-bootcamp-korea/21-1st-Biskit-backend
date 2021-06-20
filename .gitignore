@@ -3,6 +3,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,macos,linux,zsh
 
 biskit_settings.py
+csv
+biskit_demo
+db_uploader.py
 
 ### Linux ###
 *~
