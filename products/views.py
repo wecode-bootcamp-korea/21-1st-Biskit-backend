@@ -148,5 +148,5 @@ class SearchView(View):
             'review'       : product.review_set.first().content,
             'star_rating'  : product.review_set.aggregate(average=Avg('star_rating'))['average']
          }for product in products]
-
+         
         return JsonResponse({'result' : result}, status=200)
