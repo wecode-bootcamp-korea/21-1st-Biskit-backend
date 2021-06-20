@@ -4,5 +4,5 @@ from .views     import CartDeleteView, CartView
 
 urlpatterns = [
     path('', CartView.as_view()),
-    path('/<int:product_id>', CartDeleteView.as_view())
+    path('/delete', CartDeleteView.as_view())
 ]
