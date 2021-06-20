@@ -52,11 +52,13 @@ class ProductReviewVeiw(View):
             for product in products:
                 review = product.review_set.first()
                 review_info.append({
-                'user'         : review.user.account,
-                'review_image' : review.image_url,
-                'content'      : review.content,
-                'created_at'   : review.created_at,
-                'star_rating'  : review.star_rating
+                    'title'        : product.title,
+                    'image'        : product.productimage_set.first().image_url,
+                    'user'         : review.user.account,
+                    'review_image' : review.image_url,
+                    'content'      : review.content,
+                    'created_at'   : review.created_at,
+                    'star_rating'  : review.star_rating
                 })
 
             return JsonResponse({'result' : review_info}, status=200)
@@ -108,9 +110,9 @@ class ProductList(View):
             'rating'    : round(product.rating,1),
             'title'     : product.title,
             'sub_title' : product.sub_title,
-            'price'     : int(product.price),
+            'price'     : str(int(product.price)),
             'calorie'   : product.calorie,
-            'gram'      : product.gram,
+            'gram'      : str(int(product.gram)),
             'taste'     : product.tasteproduct_set.first().taste.name,
             'images'    : product.productimage_set.first().image_url,
             'reviews'   : product.review_set.aggregate(count=Count('star_rating'))['count']
